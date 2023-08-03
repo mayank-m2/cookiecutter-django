@@ -44,16 +44,16 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-{% if cookiecutter.use_docker == "y" -%}
+{ % if cookiecutter.use_docker == "y" - %}
 DATABASES = {"default": env.db("DATABASE_URL")}
-{%- else %}
+{ % - else %}
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
         default="postgres://{% if cookiecutter.windows == 'y' %}localhost{% endif %}/{{cookiecutter.project_slug}}",
     ),
 }
-{%- endif %}
+{ % - endif %}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -80,6 +80,8 @@ DJANGO_APPS = [
 ]
 
 WAGTAIL_APPS = [
+    "{{cookiecutter.project_slug}}.home",
+    "{{cookiecutter.project_slug}}.search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -101,18 +103,18 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-{%- if cookiecutter.use_celery == 'y' %}
-    "django_celery_beat",
-{%- endif %}
-{%- if cookiecutter.use_drf == "y" %}
-    "rest_framework",
-    "rest_framework.authtoken",
-    "corsheaders",
-    "drf_spectacular",
-{%- endif %}
-{%- if cookiecutter.frontend_pipeline == 'Webpack' %}
-    "webpack_loader",
-{%- endif %}
+    { % - if cookiecutter.use_celery == 'y' %}
+"django_celery_beat",
+{ % - endif %}
+{ % - if cookiecutter.use_drf == "y" %}
+"rest_framework",
+"rest_framework.authtoken",
+"corsheaders",
+"drf_spectacular",
+{ % - endif %}
+{ % - if cookiecutter.frontend_pipeline == 'Webpack' %}
+"webpack_loader",
+{ % - endif %}
 ]
 
 LOCAL_APPS = [
@@ -120,7 +122,7 @@ LOCAL_APPS = [
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS +  THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -164,19 +166,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-{%- if cookiecutter.use_drf == 'y' %}
-    "corsheaders.middleware.CorsMiddleware",
-{%- endif %}
-{%- if cookiecutter.use_whitenoise == 'y' %}
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-{%- endif %}
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    { % - if cookiecutter.use_drf == 'y' %}
+"corsheaders.middleware.CorsMiddleware",
+{ % - endif %}
+{ % - if cookiecutter.use_whitenoise == 'y' %}
+"whitenoise.middleware.WhiteNoiseMiddleware",
+{ % - endif %}
+"django.contrib.sessions.middleware.SessionMiddleware",
+"django.middleware.locale.LocaleMiddleware",
+"django.middleware.common.CommonMiddleware",
+"django.middleware.csrf.CsrfViewMiddleware",
+"django.contrib.auth.middleware.AuthenticationMiddleware",
+"django.contrib.messages.middleware.MessageMiddleware",
+"django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # STATIC
@@ -300,7 +302,7 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
-{% if cookiecutter.use_celery == 'y' -%}
+{ % if cookiecutter.use_celery == 'y' - %}
 # Celery
 # ------------------------------------------------------------------------------
 if USE_TZ:
@@ -336,7 +338,7 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std-setting-task_send_sent_event
 CELERY_TASK_SEND_SENT_EVENT = True
 
-{%- endif %}
+{ % - endif %}
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
@@ -344,12 +346,12 @@ ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 ACCOUNT_AUTHENTICATION_METHOD = "{{cookiecutter.username_type}}"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
-{%- if cookiecutter.username_type == "email" %}
+{ % - if cookiecutter.username_type == "email" %}
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USERNAME_REQUIRED = False
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-{%- endif %}
+{ % - endif %}
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -360,14 +362,14 @@ ACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.UserSignup
 SOCIALACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 SOCIALACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.UserSocialSignupForm"}
-{% if cookiecutter.frontend_pipeline == 'Django Compressor' -%}
+{ % if cookiecutter.frontend_pipeline == 'Django Compressor' - %}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
 INSTALLED_APPS += ["compressor"]
 STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
-{%- endif %}
-{% if cookiecutter.use_drf == "y" -%}
+{ % - endif %}
+{ % if cookiecutter.use_drf == "y" - %}
 # django-rest-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
@@ -391,8 +393,8 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }
-{%- endif %}
-{%- if cookiecutter.frontend_pipeline == 'Webpack' %}
+{ % - endif %}
+{ % - if cookiecutter.frontend_pipeline == 'Webpack' %}
 # django-webpack-loader
 # ------------------------------------------------------------------------------
 WEBPACK_LOADER = {
@@ -404,6 +406,6 @@ WEBPACK_LOADER = {
     }
 }
 
-{%- endif %}
+{ % - endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
