@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -euxv
 
 echo "Post cookiecutter project generation"
 echo "Doing wagtail related stuff"
