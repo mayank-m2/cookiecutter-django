@@ -1,0 +1,10 @@
+
+:root {
+    --w-color-primary: #ff6900;
+    /* Any valid CSS format is supported. */
+    --w-color-primary-200: #FDBA8C;
+    /* Set each HSL component separately to change all hues at once. */
+    --w-color-secondary-hue: 180.5;
+    --w-color-secondary-saturation: 100%;
+    --w-color-secondary-lightness: 24.7%;
+}
