@@ -1,3 +1,10 @@
 {% extends "wagtailadmin/login.html" %}
+{% load static %}
 
-{% block branding_login %}Sign in to Frank's Site{% endblock %}
+{% block branding_login %}Signin to Company CMS{% endblock %}
+
+{% block branding_logo %}
+    <div class="login-logo">
+        <img src="{% static 'images/company-logo.png' %}" alt="Mooving OMS" width="80"/>
+    </div>
+{% endblock %}
