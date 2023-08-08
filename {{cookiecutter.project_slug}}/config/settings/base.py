@@ -278,6 +278,7 @@ DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=Fals
 WAGTAILADMIN_BASE_URL = "http://example.com"
 WAGTAIL_ADMIN_BASE_URL = WAGTAILADMIN_BASE_URL
 WAGTAIL_ADMIN_URL = 'admin/'
+WAGTAIL_SITE_NAME = "Wagtail OMS"
 
 # LOGGING
 # ------------------------------------------------------------------------------

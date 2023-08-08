@@ -1,17 +1,17 @@
-{% if cookiecutter.use_sentry == 'y' -%}
+{ % if cookiecutter.use_sentry == 'y' - %}
 import logging
 
 import sentry_sdk
 
-{%- if cookiecutter.use_celery == 'y' %}
+{ % - if cookiecutter.use_celery == 'y' %}
 from sentry_sdk.integrations.celery import CeleryIntegration
 
-{%- endif %}
+{ % - endif %}
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
-{% endif -%}
+{ % endif - %}
 from .base import *  # noqa
 from .base import env
 
@@ -21,6 +21,11 @@ from .base import env
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["{{ cookiecutter.domain_name }}"])
+
+# WAGTAIL
+# ------------------------------------------------------------------------------
+WAGTAILADMIN_BASE_URL = "http://localhost:8000"
+WAGTAIL_ADMIN_BASE_URL = WAGTAILADMIN_BASE_URL
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -62,13 +67,13 @@ SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
 # https://docs.djangoproject.com/en/dev/ref/middleware/#x-content-type-options-nosniff
 SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
 
-{% if cookiecutter.cloud_provider != 'None' -%}
+{ % if cookiecutter.cloud_provider != 'None' - %}
 # STORAGES
 # ------------------------------------------------------------------------------
 # https://django-storages.readthedocs.io/en/latest/#installation
 INSTALLED_APPS += ["storages"]  # noqa: F405
-{%- endif -%}
-{% if cookiecutter.cloud_provider == 'AWS' %}
+{ % - endif - %}
+{ % if cookiecutter.cloud_provider == 'AWS' %}
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_ACCESS_KEY_ID = env("DJANGO_AWS_ACCESS_KEY_ID")
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
@@ -93,46 +98,46 @@ AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
 AWS_S3_CUSTOM_DOMAIN = env("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
 aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-{% elif cookiecutter.cloud_provider == 'GCP' %}
+{ % elif cookiecutter.cloud_provider == 'GCP' %}
 GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
 GS_DEFAULT_ACL = "publicRead"
-{% elif cookiecutter.cloud_provider == 'Azure' %}
+{ % elif cookiecutter.cloud_provider == 'Azure' %}
 AZURE_ACCOUNT_KEY = env("DJANGO_AZURE_ACCOUNT_KEY")
 AZURE_ACCOUNT_NAME = env("DJANGO_AZURE_ACCOUNT_NAME")
 AZURE_CONTAINER = env("DJANGO_AZURE_CONTAINER_NAME")
-{% endif -%}
+{ % endif - %}
 
-{% if cookiecutter.cloud_provider != 'None' or cookiecutter.use_whitenoise == 'y' -%}
+{ % if cookiecutter.cloud_provider != 'None' or cookiecutter.use_whitenoise == 'y' - %}
 # STATIC
 # ------------------------
-{% endif -%}
-{% if cookiecutter.use_whitenoise == 'y' -%}
+{ % endif - %}
+{ % if cookiecutter.use_whitenoise == 'y' - %}
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-{% elif cookiecutter.cloud_provider == 'AWS' -%}
+{ % elif cookiecutter.cloud_provider == 'AWS' - %}
 STATICFILES_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.StaticRootS3Boto3Storage"
 COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 STATIC_URL = f"https://{aws_s3_domain}/static/"
-{% elif cookiecutter.cloud_provider == 'GCP' -%}
+{ % elif cookiecutter.cloud_provider == 'GCP' - %}
 STATICFILES_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.StaticRootGoogleCloudStorage"
 COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
 STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/static/"
-{% elif cookiecutter.cloud_provider == 'Azure' -%}
+{ % elif cookiecutter.cloud_provider == 'Azure' - %}
 STATICFILES_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.StaticRootAzureStorage"
 STATIC_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/static/"
-{% endif -%}
+{ % endif - %}
 
 # MEDIA
 # ------------------------------------------------------------------------------
-{%- if cookiecutter.cloud_provider == 'AWS' %}
+{ % - if cookiecutter.cloud_provider == 'AWS' %}
 DEFAULT_FILE_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.MediaRootS3Boto3Storage"
 MEDIA_URL = f"https://{aws_s3_domain}/media/"
-{%- elif cookiecutter.cloud_provider == 'GCP' %}
+{ % - elif cookiecutter.cloud_provider == 'GCP' %}
 DEFAULT_FILE_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.MediaRootGoogleCloudStorage"
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
-{%- elif cookiecutter.cloud_provider == 'Azure' %}
+{ % - elif cookiecutter.cloud_provider == 'Azure' %}
 DEFAULT_FILE_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.MediaRootAzureStorage"
 MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/media/"
-{%- endif %}
+{ % - endif %}
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -160,7 +165,7 @@ ADMIN_URL = env("DJANGO_ADMIN_URL")
 INSTALLED_APPS += ["anymail"]  # noqa: F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 # https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
-{%- if cookiecutter.mail_service == 'Mailgun' %}
+{ % - if cookiecutter.mail_service == 'Mailgun' %}
 # https://anymail.readthedocs.io/en/stable/esps/mailgun/
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 ANYMAIL = {
@@ -168,76 +173,77 @@ ANYMAIL = {
     "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN"),
     "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
 }
-{%- elif cookiecutter.mail_service == 'Amazon SES' %}
+{ % - elif cookiecutter.mail_service == 'Amazon SES' %}
 # https://anymail.readthedocs.io/en/stable/esps/amazon_ses/
 EMAIL_BACKEND = "anymail.backends.amazon_ses.EmailBackend"
 ANYMAIL = {}
-{%- elif cookiecutter.mail_service == 'Mailjet' %}
+{ % - elif cookiecutter.mail_service == 'Mailjet' %}
 # https://anymail.readthedocs.io/en/stable/esps/mailjet/
 EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
 ANYMAIL = {
     "MAILJET_API_KEY": env("MAILJET_API_KEY"),
     "MAILJET_SECRET_KEY": env("MAILJET_SECRET_KEY"),
 }
-{%- elif cookiecutter.mail_service == 'Mandrill' %}
+{ % - elif cookiecutter.mail_service == 'Mandrill' %}
 # https://anymail.readthedocs.io/en/stable/esps/mandrill/
 EMAIL_BACKEND = "anymail.backends.mandrill.EmailBackend"
 ANYMAIL = {
     "MANDRILL_API_KEY": env("MANDRILL_API_KEY"),
     "MANDRILL_API_URL": env("MANDRILL_API_URL", default="https://mandrillapp.com/api/1.0"),
 }
-{%- elif cookiecutter.mail_service == 'Postmark' %}
+{ % - elif cookiecutter.mail_service == 'Postmark' %}
 # https://anymail.readthedocs.io/en/stable/esps/postmark/
 EMAIL_BACKEND = "anymail.backends.postmark.EmailBackend"
 ANYMAIL = {
     "POSTMARK_SERVER_TOKEN": env("POSTMARK_SERVER_TOKEN"),
     "POSTMARK_API_URL": env("POSTMARK_API_URL", default="https://api.postmarkapp.com/"),
 }
-{%- elif cookiecutter.mail_service == 'Sendgrid' %}
+{ % - elif cookiecutter.mail_service == 'Sendgrid' %}
 # https://anymail.readthedocs.io/en/stable/esps/sendgrid/
 EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 ANYMAIL = {
     "SENDGRID_API_KEY": env("SENDGRID_API_KEY"),
     "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
 }
-{%- elif cookiecutter.mail_service == 'SendinBlue' %}
+{ % - elif cookiecutter.mail_service == 'SendinBlue' %}
 # https://anymail.readthedocs.io/en/stable/esps/sendinblue/
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 ANYMAIL = {
     "SENDINBLUE_API_KEY": env("SENDINBLUE_API_KEY"),
     "SENDINBLUE_API_URL": env("SENDINBLUE_API_URL", default="https://api.sendinblue.com/v3/"),
 }
-{%- elif cookiecutter.mail_service == 'SparkPost' %}
+{ % - elif cookiecutter.mail_service == 'SparkPost' %}
 # https://anymail.readthedocs.io/en/stable/esps/sparkpost/
 EMAIL_BACKEND = "anymail.backends.sparkpost.EmailBackend"
 ANYMAIL = {
     "SPARKPOST_API_KEY": env("SPARKPOST_API_KEY"),
     "SPARKPOST_API_URL": env("SPARKPOST_API_URL", default="https://api.sparkpost.com/api/v1"),
 }
-{%- elif cookiecutter.mail_service == 'Other SMTP' %}
+{ % - elif cookiecutter.mail_service == 'Other SMTP' %}
 # https://anymail.readthedocs.io/en/stable/esps
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 ANYMAIL = {}
-{%- endif %}
+{ % - endif %}
 
-{% if cookiecutter.frontend_pipeline == 'Django Compressor' -%}
+{ % if cookiecutter.frontend_pipeline == 'Django Compressor' - %}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_ENABLED
 COMPRESS_ENABLED = env.bool("COMPRESS_ENABLED", default=True)
-{%- if cookiecutter.cloud_provider == 'None' %}
+{ % - if cookiecutter.cloud_provider == 'None' %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
-{%- elif cookiecutter.cloud_provider in ('AWS', 'GCP', 'Azure') and cookiecutter.use_whitenoise == 'n' %}
+{ % - elif cookiecutter.cloud_provider in ('AWS', 'GCP', 'Azure') and cookiecutter.use_whitenoise == 'n' %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = STATICFILES_STORAGE
-{%- endif %}
+{ % - endif %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_URL
-COMPRESS_URL = STATIC_URL{% if cookiecutter.use_whitenoise == 'y' or cookiecutter.cloud_provider == 'None' %}  # noqa: F405{% endif %}
-{%- if cookiecutter.use_whitenoise == 'y' %}
+COMPRESS_URL = STATIC_URL
+{ % if cookiecutter.use_whitenoise == 'y' or cookiecutter.cloud_provider == 'None' %}  # noqa: F405{% endif %}
+{ % - if cookiecutter.use_whitenoise == 'y' %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_OFFLINE
 COMPRESS_OFFLINE = True  # Offline compression is required when using Whitenoise
-{%- endif %}
+{ % - endif %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_FILTERS
 COMPRESS_FILTERS = {
     "css": [
@@ -246,19 +252,19 @@ COMPRESS_FILTERS = {
     ],
     "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
-{% endif %}
-{%- if cookiecutter.use_whitenoise == 'n' -%}
+{ % endif %}
+{ % - if cookiecutter.use_whitenoise == 'n' - %}
 # Collectfast
 # ------------------------------------------------------------------------------
 # https://github.com/antonagestam/collectfast#installation
 INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
-{% endif %}
+{ % endif %}
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-{% if cookiecutter.use_sentry == 'n' -%}
+{ % if cookiecutter.use_sentry == 'n' - %}
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -297,7 +303,7 @@ LOGGING = {
         },
     },
 }
-{% else %}
+{ % else %}
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -340,16 +346,16 @@ sentry_logging = LoggingIntegration(
     event_level=logging.ERROR,  # Send errors as events
 )
 
-{%- if cookiecutter.use_celery == 'y' %}
+{ % - if cookiecutter.use_celery == 'y' %}
 integrations = [
     sentry_logging,
     DjangoIntegration(),
     CeleryIntegration(),
     RedisIntegration(),
 ]
-{% else %}
+{ % else %}
 integrations = [sentry_logging, DjangoIntegration(), RedisIntegration()]
-{% endif -%}
+{ % endif - %}
 
 sentry_sdk.init(
     dsn=SENTRY_DSN,
@@ -357,8 +363,8 @@ sentry_sdk.init(
     environment=env("SENTRY_ENVIRONMENT", default="production"),
     traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
 )
-{% endif %}
-{% if cookiecutter.use_drf == "y" -%}
+{ % endif %}
+{ % if cookiecutter.use_drf == "y" - %}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------
@@ -367,6 +373,6 @@ SPECTACULAR_SETTINGS["SERVERS"] = [  # noqa: F405
     {"url": "https://{{ cookiecutter.domain_name }}", "description": "Production server"},
 ]
 
-{%- endif %}
+{ % - endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
