@@ -80,8 +80,6 @@ DJANGO_APPS = [
 ]
 
 WAGTAIL_APPS = [
-    "{{cookiecutter.project_slug}}.home",
-    "{{cookiecutter.project_slug}}.search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -118,6 +116,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "{{cookiecutter.project_slug}}.home",
+    "{{cookiecutter.project_slug}}.search",
     "{{ cookiecutter.project_slug }}.users",
     # Your stuff: custom apps go here
 ]
