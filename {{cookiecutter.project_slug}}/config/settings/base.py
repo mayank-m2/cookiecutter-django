@@ -111,13 +111,16 @@ THIRD_PARTY_APPS = [
 "rest_framework.authtoken",
 "corsheaders",
 "drf_spectacular",
+'tailwind',
 { % - endif %}
 { % - if cookiecutter.frontend_pipeline == 'Webpack' %}
 "webpack_loader",
 { % - endif %}
+
 ]
 
 LOCAL_APPS = [
+    "{{ cookiecutter.project_slug }}.theme",
     "{{ cookiecutter.project_slug }}.users",
     # Your stuff: custom apps go here
 ]
@@ -408,5 +411,11 @@ WEBPACK_LOADER = {
 }
 
 { % - endif %}
+
+# Tailwind
+# ------------------------------------------------------------------------------
+# https://django-tailwind.readthedocs.io/en/latest/installation.html
+TAILWIND_APP_NAME = 'theme'
+
 # Your stuff...
 # ------------------------------------------------------------------------------

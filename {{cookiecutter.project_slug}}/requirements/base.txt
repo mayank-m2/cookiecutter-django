@@ -49,3 +49,4 @@ drf-spectacular==0.26.4  # https://github.com/tfranzel/drf-spectacular
 django-webpack-loader==2.0.1  # https://github.com/django-webpack/django-webpack-loader
 {%- endif %}
 wagtail
+django-tailwind==3.6.0 # https://github.com/timonweb/django-tailwind
